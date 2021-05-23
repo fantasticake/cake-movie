@@ -15,8 +15,13 @@ const Detail = ({
     try {
       if (pathname.includes("/movies/"))
         ({ data: detail } = await movieApi.detail(id));
-      else if (pathname.includes("/tvs/"))
+      else if (pathname.includes("/tvs/")) {
         ({ data: detail } = await tvApi.detail(id));
+        const {
+          data: { imdb_id },
+        } = await tvApi.externalIds(id);
+        detail.imdb_id = imdb_id;
+      }
       setData((cur) => ({ ...cur, detail }));
     } catch (error) {
       setData((cur) => ({ ...cur, error }));

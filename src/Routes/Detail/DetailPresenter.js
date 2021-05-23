@@ -7,6 +7,11 @@ const Container = styled.div`
   position: relative;
   padding-bottom: 50px;
   color: #f7e8e8;
+  a {
+    color: #f7e8e8;
+    cursor: pointer;
+    text-decoration: underline;
+  }
 `;
 
 const BgImg = styled.img`
@@ -71,6 +76,10 @@ const VoteAverage = styled.span`
 
 const VoteCount = styled.span``;
 
+const IMDbLink = styled.div`
+  margin-top: 10px;
+`;
+
 const Runtime = styled.span``;
 
 const Genres = styled.ul`
@@ -120,6 +129,34 @@ const Overview = styled.p`
   line-height: 30px;
 `;
 
+const CompanyList = styled.ul`
+  display: flex;
+  gap: 20px;
+  margin-left: 50px;
+  align-items: flex-end;
+  margin-top: 50px;
+  flex-wrap: wrap;
+  justify-content: center;
+  li {
+    img {
+      width: 100px;
+      height: 55px;
+      font-size: 12px;
+      text-align: center;
+    }
+  }
+`;
+
+const CountryList = styled.ul`
+  display: flex;
+  justify-content: center;
+  font-size: 15px;
+  margin-top: 30px;
+  gap: 15px;
+  margin-left: 50px;
+  flex-wrap: wrap;
+`;
+
 const Videos = styled.ul`
   height: ${(props) => (props.isNoVideo ? "0" : "70vh")};
   overflow-y: auto;
@@ -138,58 +175,86 @@ const Video = styled.iframe`
   border-radius: 10px;
 `;
 
-function Detail({ detail, error }) {
-  const isNoVideo = detail.videos.results.length === 0;
+function Detail({
+  detail: {
+    videos,
+    backdrop_path,
+    title,
+    name,
+    original_name,
+    original_title,
+    original_language,
+    runtime,
+    episode_run_time,
+    genres,
+    release_date,
+    first_air_date,
+    last_air_date,
+    vote_average,
+    vote_count,
+    seasons,
+    overview,
+    imdb_id,
+    production_companies,
+    production_countries,
+  },
+  error,
+}) {
+  const isNoVideo = videos.results.length === 0;
   return (
     <Container>
-      {detail.backdrop_path ? (
-        <BgImg
-          src={`https://image.tmdb.org/t/p/w500/${detail.backdrop_path}`}
-        />
+      {backdrop_path ? (
+        <BgImg src={`https://image.tmdb.org/t/p/w500/${backdrop_path}`} />
       ) : null}
       <div>
         <Titles>
-          <Title>{detail.title || detail.name}</Title>
-          {detail.title !== detail.original_title ||
-          detail.name !== detail.original_name ? (
+          <Title>{title || name}</Title>
+          {title !== original_title || name !== original_name ? (
             <OriTitle>
-              ( {detail.original_language} :{" "}
-              {detail.original_title || detail.original_name} )
+              ( {original_language} : {original_title || original_name} )
             </OriTitle>
           ) : null}
         </Titles>
         <TopBox>
           <div>
             <Runtime>
-              {(detail.runtime && `${detail.runtime} min`) ||
-                detail.episode_run_time.map((time, index) => (
+              {(runtime && `${runtime} min`) ||
+                episode_run_time.map((time, index) => (
                   <span key={index}>{`${time} min`}</span>
                 ))}
             </Runtime>
             <Genres>
-              {detail.genres.map((genre) => (
+              {genres.map((genre) => (
                 <Genre key={genre.id}>{genre.name}</Genre>
               ))}
             </Genres>
           </div>
           <div>
             <ReleaseDate>
-              {detail.release_date ||
-                `${detail.first_air_date} ~ ${detail.last_air_date}`}
+              {release_date || `${first_air_date} ~ ${last_air_date}`}
             </ReleaseDate>
             <VoteContainer>
               <VoteAverage>
-                <span>{`${detail.vote_average} / 10`}</span>
+                <span>{`${vote_average} / 10`}</span>
                 <i className="fas fa-star"></i>
               </VoteAverage>
-              <VoteCount>{`${detail.vote_count} votes`}</VoteCount>
+              <VoteCount>{`${vote_count} votes`}</VoteCount>
             </VoteContainer>
+            <IMDbLink>
+              <a
+                href={`https://www.imdb.com/title/${imdb_id}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                IMDb
+              </a>
+            </IMDbLink>
           </div>
         </TopBox>
-        {detail.seasons ? (
-          <Scroller visible={detail.seasons.length > 3}>
+        {seasons ? (
+          <Scroller visible={seasons.length > 3}>
             <Seasons>
-              {detail.seasons.map((season) => (
+              {seasons.map((season) => (
                 <Season key={season.id}>
                   <SeasonPoster
                     src={
@@ -205,15 +270,36 @@ function Detail({ detail, error }) {
           </Scroller>
         ) : null}
         <BottomBox isNoVideo={isNoVideo}>
-          <Videos isNoVideo={isNoVideo}>
-            {detail.videos.results.map((video) => (
-              <Video
-                key={video.id}
-                src={`https://www.youtube.com/embed/${video.key}`}
-              ></Video>
-            ))}
-          </Videos>
-          <Overview>{detail.overview}</Overview>
+          <div>
+            <Videos isNoVideo={isNoVideo}>
+              {videos.results.map((video) => (
+                <Video
+                  key={video.id}
+                  src={`https://www.youtube.com/embed/${video.key}`}
+                ></Video>
+              ))}
+            </Videos>
+          </div>
+          <div>
+            <Overview>{overview}</Overview>
+            <CompanyList>
+              {production_companies.map(({ id, name, logo_path }) => (
+                <li key={id}>
+                  <img
+                    src={`https://image.tmdb.org/t/p/w200/${logo_path}`}
+                    title={name}
+                    alt={name}
+                  />
+                </li>
+              ))}
+            </CompanyList>
+            <CountryList>
+              {production_countries.length !== 0 && "Production Country : "}
+              {production_countries.map(({ name }) => (
+                <li key={name}>{name}</li>
+              ))}
+            </CountryList>
+          </div>
         </BottomBox>
       </div>
     </Container>

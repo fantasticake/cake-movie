@@ -44,4 +44,5 @@ export const tvApi = {
         include_adult,
       },
     }),
+  externalIds: (id) => api.get(`/tv/${id}/external_ids`),
 };
