@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { SettingContext } from "./SettingContext";
 
 const Container = styled.div`
-  color: #8785a2;
+  color: #10002b;
 `;
 
 const SettingArea = styled.div`

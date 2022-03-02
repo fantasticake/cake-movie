@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import Scroller from "../../Components/Scroller";
 import defaultImg from "../../images/defaultImg.jpg";
@@ -18,7 +18,6 @@ const BgImg = styled.img`
   position: absolute;
   width: 100%;
   background-repeat: repeat-y;
-  filter: blur(5px) brightness(0.6);
   opacity: 0.6;
   z-index: -1;
 `;
@@ -60,7 +59,7 @@ const VoteContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #8785a2;
+  background-color: #10002b;
   padding: 15px 25px;
   border-radius: 10px;
   margin-top: 10px;
@@ -86,7 +85,7 @@ const Genres = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background-color: #8785a2;
+  background-color: #10002b;
   border-radius: 10px;
   padding: 15px 25px;
   margin-top: 10px;
@@ -95,11 +94,31 @@ const Genres = styled.ul`
 
 const Genre = styled.li``;
 
+const SeasonsBox = styled.div`
+  position: relative;
+  margin: 0 100px 40px 100px;
+  :hover {
+    ul {
+      ::-webkit-scrollbar {
+        background-color: #f7e8e8;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #ffc7c7;
+      }
+    }
+  }
+`;
+
 const Seasons = styled.ul`
   display: flex;
   gap: 20px;
-  margin: 0 100px 40px 100px;
   overflow-x: auto;
+  ::-webkit-scrollbar {
+    background-color: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
 `;
 
 const Season = styled.li`
@@ -111,7 +130,7 @@ const Season = styled.li`
 `;
 
 const SeasonPoster = styled.img`
-  height: 300px;
+  height: 240px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   border-radius: 20px;
 `;
@@ -130,6 +149,8 @@ const Overview = styled.p`
 `;
 
 const CompanyList = styled.ul`
+  background-color: #f7e8e8;
+  padding: 10px;
   display: flex;
   gap: 20px;
   margin-left: 50px;
@@ -139,8 +160,7 @@ const CompanyList = styled.ul`
   justify-content: center;
   li {
     img {
-      width: 100px;
-      height: 55px;
+      width: 80px;
       font-size: 12px;
       text-align: center;
     }
@@ -152,7 +172,6 @@ const CountryList = styled.ul`
   justify-content: center;
   font-size: 15px;
   margin-top: 30px;
-  gap: 15px;
   margin-left: 50px;
   flex-wrap: wrap;
 `;
@@ -201,6 +220,7 @@ function Detail({
   error,
 }) {
   const isNoVideo = videos.results.length === 0;
+  const listRef = useRef();
   return (
     <Container>
       {backdrop_path ? (
@@ -252,8 +272,9 @@ function Detail({
           </div>
         </TopBox>
         {seasons ? (
-          <Scroller visible={seasons.length > 3}>
-            <Seasons>
+          <SeasonsBox>
+            <Scroller listRef={listRef} visible={seasons.length > 5} />
+            <Seasons ref={listRef}>
               {seasons.map((season) => (
                 <Season key={season.id}>
                   <SeasonPoster
@@ -267,7 +288,7 @@ function Detail({
                 </Season>
               ))}
             </Seasons>
-          </Scroller>
+          </SeasonsBox>
         ) : null}
         <BottomBox isNoVideo={isNoVideo}>
           <div>
@@ -283,18 +304,20 @@ function Detail({
           <div>
             <Overview>{overview}</Overview>
             <CompanyList>
-              {production_companies.map(({ id, name, logo_path }) => (
-                <li key={id}>
-                  <img
-                    src={`https://image.tmdb.org/t/p/w200/${logo_path}`}
-                    title={name}
-                    alt={name}
-                  />
-                </li>
-              ))}
+              {production_companies.map(
+                ({ id, name, logo_path }) =>
+                  logo_path && (
+                    <li key={id}>
+                      <img
+                        src={`https://image.tmdb.org/t/p/w200/${logo_path}`}
+                        title={name}
+                        alt={name}
+                      />
+                    </li>
+                  )
+              )}
             </CompanyList>
             <CountryList>
-              {production_countries.length !== 0 && "Production Country : "}
               {production_countries.map(({ name }) => (
                 <li key={name}>{name}</li>
               ))}

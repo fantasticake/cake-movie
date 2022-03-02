@@ -10,7 +10,6 @@ const GlobalStyle = createGlobalStyle`
     }
     outline-color: #f7e8e8;
     cursor: default;
-    z-index: 0;
   }
   a {
     text-decoration: none;
@@ -19,8 +18,9 @@ const GlobalStyle = createGlobalStyle`
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 20px;
     font-weight: 600;
-    background-color: #8785a2;
+    background-color: #10002B;
     padding-top: 60px;
+    color: #7B2CBF;
   }
 `;
 

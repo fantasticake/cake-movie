@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import defaultImg from "../images/defaultImg.jpg";
@@ -6,23 +6,43 @@ import Scroller from "./Scroller";
 
 const Container = styled.ul`
   margin-top: 30px;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   color: #f7e8e8;
 `;
 
 const ContainerTitle = styled.h3`
-  font-size: 40px;
+  font-size: 30px;
+  margin-top: 20px;
   margin-bottom: 30px;
   margin-left: 20px;
-  text-shadow: 2px 7px 5px rgba(0, 0, 0, 0.3),
-    0px -4px 10px rgba(255, 255, 255, 0.3);
+  text-shadow: 1px 3px 2px rgba(0, 0, 0, 0.3);
+`;
+
+const ListBox = styled.div`
+  margin: 0 20px;
+  position: relative;
+  :hover {
+    ul {
+      ::-webkit-scrollbar {
+        background-color: #f7e8e8;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #ffc7c7;
+      }
+    }
+  }
 `;
 
 const List = styled.ul`
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  margin: 0 20px;
+  ::-webkit-scrollbar {
+    background-color: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
 `;
 
 const Votes = styled.span`
@@ -53,8 +73,7 @@ const Item = styled.ul`
   gap: 15px;
   :hover {
     ${Poster} {
-      border-radius: 50px;
-      filter: brightness(0.7);
+      filter: brightness(0.8);
     }
     ${Votes} {
       opacity: 1;
@@ -72,11 +91,13 @@ const Title = styled.h5`
 `;
 
 const ListMaker = ({ list, title, isMovie }) => {
+  const listRef = useRef();
   return (
     <Container>
       <ContainerTitle>{title}</ContainerTitle>
-      <Scroller visible={list.length > 5}>
-        <List>
+      <ListBox>
+        <Scroller listRef={listRef} visible={list.length > 5} />
+        <List ref={listRef}>
           {list.map((item) => (
             <Link to={(isMovie ? "movies/" : "tvs/") + item.id} key={item.id}>
               <Item>
@@ -104,7 +125,7 @@ const ListMaker = ({ list, title, isMovie }) => {
             </Link>
           ))}
         </List>
-      </Scroller>
+      </ListBox>
     </Container>
   );
 };

@@ -12,7 +12,7 @@ const Contianer = styled.header`
   padding-right: 25px;
   height: 60px;
   top: 0;
-  z-index: 1;
+  z-index: 10;
 `;
 
 const List = styled.ul`
@@ -34,7 +34,7 @@ const SLink = styled(Link)`
   }
   border-bottom: solid 10px
     ${(props) => (props.iscurrent === "true" ? "#ffc7c7" : "transparent")};
-  color: #8785a2;
+  color: #10002b;
   display: flex;
   align-items: center;
   height: 100%;
