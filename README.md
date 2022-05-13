@@ -2,4 +2,4 @@
 
 react movie app
 
-https://reverent-aryabhata-0feabd.netlify.app
+https://cakemovie.netlify.app/#/
